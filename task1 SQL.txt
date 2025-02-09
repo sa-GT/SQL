@@ -1,0 +1,47 @@
+--create database library;
+create table book (
+book_id int primary key,
+title varchar(max),
+Author_id int,
+PublishedYear date,
+CopiesAvailable int,
+BookCategory varchar(20)
+)
+
+create table author(
+	AuthorID int primary key,
+	firstname varchar(20),
+	lastname varchar(20),
+	Birth_Year date
+);
+--insert data on book
+INSERT INTO book (book_id, title, Author_id, PublishedYear, CopiesAvailable, BookCategory)
+VALUES 
+(1, 'hello', 1, '2020-02-20', 5, 'History'),
+(2, 'hello', 2, '2020-02-20', 7, 'History'),
+(3, 'hello', 3, '2020-02-20', 9, 'History'),
+(4, 'hello', 4, '2020-02-20', 10, 'History'),
+(5, 'hello', 5, '2020-02-20', 5, 'History');
+
+-- doing insert for Author 
+insert into author(AuthorID,firstname,lastname,Birth_Year)
+Values 
+(1,'sura','hailat','2000-06-20'),
+(2,'sura','hailat','2000-06-20'),
+(3,'sura','hailat','2000-06-20'),
+(4,'sura','hailat','2000-06-20'),
+(5,'sura','hailat','2000-06-20');
+-- display data for book
+select * from book
+--avg for PublishedYear
+select AVG(PublishedYear) from book
+-- sum of book
+select sum(CopiesAvailable) as total_book from book
+--empty record 
+truncate table book;
+--update authour
+alter table author 
+add email varchar(50),
+phone_number int;
+--delete author table 
+drop table author
