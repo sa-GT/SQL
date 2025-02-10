@@ -42,3 +42,12 @@ CREATE TABLE take
   FOREIGN KEY (ID) REFERENCES student(ID),
   FOREIGN KEY (course_id) REFERENCES courses(course_id)
 );
+
+CREATE TABLE have
+(
+  ID INT NOT NULL,
+  ID INT NOT NULL,
+  PRIMARY KEY (ID, ID),
+  FOREIGN KEY (ID) REFERENCES Teachers(ID),
+  FOREIGN KEY (ID) REFERENCES student(ID)
+);
