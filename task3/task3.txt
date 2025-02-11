@@ -1,0 +1,188 @@
+
+
+
+create Table family_info(
+    family_id INT PRIMARY KEY IDENTITY(1,1),
+    guardian_name VARCHAR(100), 
+    address VARCHAR(255), 
+    phone VARCHAR(20), 
+    email VARCHAR(100) UNIQUE
+);
+
+create Table Courses (
+	ID int primary key IDENTITY(1,1),
+	name varchar(50),
+	description varchar(200),
+	Rescourses varchar(200)
+);
+
+
+create Table class(
+	ID int primary key IDENTITY(1,1),
+	class_code int,
+	Room_number int,
+	schedule date,
+	course_id int,
+	FOREIGN KEY (course_id) REFERENCES Courses(ID)
+);
+
+
+create table student (
+	ID int primary key identity(1,1),
+	name varchar(50),
+	datee date,
+	address varchar(50),
+	family_id int,
+	class_id int,
+	FOREIGN KEY (family_id)  REFERENCES family_info(family_id),
+	FOREIGN KEY (class_id)  REFERENCES class(ID)
+);
+
+
+create Table Enroll (
+	student_id int,
+	courses_id int,
+	FOREIGN KEY (courses_id) REFERENCES Courses(ID),
+	FOREIGN KEY (student_id) REFERENCES student(ID)
+);
+
+
+create Table Assignments (
+	ID int primary key identity(1,1),
+	name varchar(50),
+	description varchar(200),
+	datee date,
+	statuss varchar(50),
+	courses_id int,
+	FOREIGN KEY (courses_id) REFERENCES Courses(ID)
+);
+
+Create Table  attendance (
+	ID int primary key identity(1,1),
+	attendance_date date,
+	Type_of_absence varchar(50),
+	student_id int,
+	class_id int,
+	FOREIGN KEY (student_id) REFERENCES student(ID),
+    FOREIGN KEY (class_id) REFERENCES class(ID)
+);
+--Family info inserted 
+
+
+select * from family_info
+insert into family_info (guardian_name , address,phone, email)
+values
+('Ali Ahmad', '123 Main St', '0771234567', 'ali.ahmad@example.com'),
+('Sara Khaled', '456 Elm St', '0789876543', 'sara.khaled@example.com'),
+('Omar Nasser', '789 Oak St', '0795554321', 'omar.nasser@example.com');
+
+--courses inserted 
+INSERT INTO Courses (name, description, Rescourses) 
+VALUES 
+('Mathematics', 'Advanced Algebra and Calculus', 'math_textbook.pdf'),
+('Science', 'Physics and Chemistry basics', 'science_lab_manual.pdf'),
+('History', 'World history from 1500 to present', 'history_notes.pdf');
+
+-- class inseredd data 
+INSERT INTO class (class_code, Room_number, schedule, course_id) 
+VALUES 
+(101, 1, '2025-02-15', 1), 
+(102, 2, '2025-02-16', 2), 
+(103, 3, '2025-02-17', 3);
+
+--student inserted 
+INSERT INTO student (name, datee, address, family_id, class_id) 
+VALUES 
+('Yousef Ali', '2010-05-12', '123 Main St', 1, 1), 
+('Leen Sara', '2011-08-20', '456 Elm St', 2, 2), 
+('Amir Omar', '2009-11-30', '789 Oak St', 3, 3);
+--enrollment inserted 
+INSERT INTO Enroll (student_id, courses_id) 
+VALUES 
+(1, 1), 
+(2, 2), 
+(3, 3); 
+
+-- Insert data into Assignments
+INSERT INTO Assignments (name, description, datee, statuss, courses_id) 
+VALUES 
+('Algebra Homework', 'Solve 10 algebra problems', '2025-02-20', 'Pending', 1), 
+('Physics Lab Report', 'Write a lab report on Newton’s Laws', '2025-02-22', 'Assigned', 2), 
+('Historical Essay', 'Write a 3-page essay on WW2', '2025-02-25', 'Pending', 3);
+
+-- Insert data into Attendance
+INSERT INTO attendance (attendance_date, Type_of_absence, student_id, class_id) 
+VALUES 
+('2025-02-10', 'Present', 1, 1), 
+('2025-02-11', 'Absent', 2, 2), 
+('2025-02-12', 'Late', 3, 3);
+--Q1
+--select * from student
+
+select name , datee 
+from student 
+where datee = '2010-05-12'
+
+--Q2
+
+--select * from Courses
+
+select name,description
+from Courses
+where name = 'Mathematics'
+
+--Q3
+
+alter table student 
+add  Email varchar(20)
+
+--Q4
+
+insert into student 
+values('Mohammad','2000-04-02','1125 ELM',2,3,'habeebs28@gemail.com')
+
+--Q5
+
+select s.name , f.family_id
+from student s
+inner join family_info f on s.family_id = f.family_id
+
+--Q6
+
+select s.name , c.name
+From student s
+inner join Enroll e on s.ID = e.student_id
+inner join Courses c on e.courses_id = c.ID
+where c.name='History'
+
+select * from Courses
+
+--Q7
+select * from Assignments
+
+select ss.name,s.name
+From student s
+inner join Enroll e on s.ID = e.student_id
+inner join Courses c on e.courses_id = c.ID
+inner Join Assignments ss on ss.courses_id = c.ID
+where ss.statuss='success'
+
+--Q8
+
+select * from attendance
+
+update attendance 
+set Type_of_absence = 'absence'
+where ID = 1
+
+update attendance 
+set Type_of_absence = 'late'
+where ID = 2
+
+
+SELECT t.name, e.attendance_date
+FROM student t
+INNER JOIN attendance e ON e.student_id = t.ID
+WHERE e.attendance_date BETWEEN '2025-02-10' AND '2025-02-12'
+AND e.type_of_absence = 'leave';
+
