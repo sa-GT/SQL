@@ -1,0 +1,211 @@
+CREATE TABLE Book
+(
+  ID_b INT primary key,
+  Title varchar(200),
+  Genre varchar(20),
+  Publication_Year date,
+  Availability_Status varchar(20),
+);
+
+CREATE TABLE members
+(
+  ID INT primary key,
+  name varchar(20) NOT NULL,
+  Contact_Information varchar(20),
+  Membership_Type_ varchar(20) ,
+  Registration_Date date ,
+);
+
+CREATE TABLE library_staff
+(
+  ID INT primary key,
+  Name char(50) NOT NULL,
+  Contact_Info varchar(50) ,
+  Assigned_Section varchar(50) ,
+  Employment_Date date ,
+);
+
+CREATE TABLE categories
+(
+  ID_c INT primary key,
+  Name varchar(50),
+  description varchar(200),
+  ID_b INT,
+  FOREIGN KEY (ID_b) REFERENCES Book(ID_b)
+);
+
+CREATE TABLE Financial__fines
+(
+  ID INT primary key,
+  Amount INT,
+  Payment_Status varchar(40),
+  ID_s INT,
+  FOREIGN KEY (ID_s) REFERENCES members(ID)
+);
+
+CREATE TABLE borrowing
+(
+  ID_b INT,
+  ID INT,
+  FOREIGN KEY (ID_b) REFERENCES Book(ID_b),
+  FOREIGN KEY (ID) REFERENCES members(ID)
+);
+
+CREATE TABLE Reservation
+(
+  ID_b INT,
+  ID INT ,
+  PRIMARY KEY (ID_b, ID),
+  FOREIGN KEY (ID_b) REFERENCES Book(ID_b),
+  FOREIGN KEY (ID) REFERENCES members(ID)
+);
+
+
+-- Inserting data into Book table
+INSERT INTO Book (ID_b, Title, Genre, Publication_Year, Availability_Status)
+VALUES 
+(1, 'The Great Gatsby', 'Novel', '1925-04-10', 'Available'),
+(2, '1984', 'Dystopian', '1949-06-08', 'Unavailable'),
+(3, 'To Kill a Mockingbird', 'Drama', '1960-07-11', 'Available'),
+(4, 'Pride and Prejudice', 'Romance', '1813-01-28', 'Available'),
+(5, 'The Catcher in the Rye', 'Fiction', '1951-07-16', 'Unavailable');
+
+-- Inserting data into Members table
+INSERT INTO members (ID, name, Contact_Information, Membership_Type_, Registration_Date)
+VALUES
+(1, 'John Doe', '555-1234', 'Student', '2025-01-15'),
+(2, 'Jane Smith', '555-5678', 'Teacher', '2024-12-10'),
+(3, 'Alice Johnson', '555-8765', 'Visitor', '2025-01-01'),
+(4, 'Bob Brown', '555-4321', 'Student', '2024-11-20'),
+(5, 'Charlie Davis', '555-9876', 'Teacher', '2024-10-05');
+
+-- Inserting data into Library Staff table
+INSERT INTO library_staff (ID, Name, Contact_Info, Assigned_Section, Employment_Date)
+VALUES 
+(1, 'Emma Wilson', '555-1357', 'Literature', '2020-05-01'),
+(2, 'Noah Miller', '555-2468', 'Science', '2021-07-15'),
+(3, 'Olivia Moore', '555-3579', 'Fiction', '2019-11-12'),
+(4, 'Liam Taylor', '555-4680', 'History', '2022-09-25');
+
+-- Inserting data into Categories table
+INSERT INTO categories (ID_c, Name, description, ID_b)
+VALUES
+(1, 'Fiction', 'Books that contain stories created from the imagination.', 3),
+(2, 'Classics', 'Books that have stood the test of time and are considered exemplary.', 4),
+(3, 'Modern Literature', 'Contemporary literary works often dealing with societal issues.', 1),
+(4, 'Sci-Fi', 'Books based on speculative science or futuristic concepts.', 2);
+
+-- Inserting data into Financial Fines table
+INSERT INTO Financial__fines (ID, Amount, Payment_Status, ID_s)
+VALUES
+(1, 50, 'Unpaid', 1),
+(2, 20, 'Paid', 2),
+(3, 15, 'Unpaid', 3),
+(4, 10, 'Paid', 4),
+(5, 30, 'Unpaid', 5);
+
+-- Inserting data into Borrowing table
+INSERT INTO borrowing (ID_b, ID)
+VALUES
+(1, 1),
+(2, 2),
+(3, 3),
+(4, 4),
+(5, 5);
+
+-- Inserting data into Reservation table
+INSERT INTO Reservation (ID_b, ID)
+VALUES
+(1, 2),
+(2, 4),
+(3, 5),
+(4, 1);
+
+
+-- 1. Select members who registered on a specific date 
+select name , Contact_Information , Membership_Type_ 
+from members
+where Registration_Date = '2025-01-01'
+
+
+--2 . Select details of a book by its title
+
+select ID_b,Title ,  Genre , Publication_Year , Availability_Status 
+from Book
+where Title = '1984'
+
+--3.Add a new column ‘Email’ to the Members table
+
+select * from members
+
+alter table members
+add Email varchar(200)
+
+--4. Insert a new member record
+select * from members
+insert into members values (7,'Omar','9876543210','Student','2024-06-05','Omar@gmail.com')
+--5.Select members who have reservations in the system 
+
+select * from Book
+select * from members
+select * from Reservation
+
+select m.name , k.Title ,  k.Availability_Status
+from members  m
+inner join Reservation r on m.ID = r.ID 
+inner join Book k on r.ID_b = k.ID_b
+
+where k.Availability_Status ='unavailable'
+
+--6.Select members who have borrowed a specific book
+select * from borrowing
+
+select m.ID,m.name , k.Title , k.ID_b
+from members  m
+inner join borrowing g on m.ID = g.ID 
+inner join Book k on g.ID_b = k.ID_b
+
+where k.Title = 'the Great Gatsby'
+--7.Select members who have borrowed and returned a specific book
+select * from Book
+select * from members
+alter table borrowing 
+add return_date date
+
+select * from borrowing
+
+select s.name , ss.Title , g.return_date , g.du_date
+ from members s
+ inner join borrowing g on s.ID = g.ID_b
+ inner join Book ss on ss.ID_b = g.ID_b
+ where g.return_date  = g.du_date
+
+ --8.Find members who made a late return
+ select s.name , ss.Title , g.return_date , g.du_date
+ from members s
+ inner join borrowing g on s.ID = g.ID_b
+ inner join Book ss on ss.ID_b = g.ID_b
+ where g.return_date  > g.du_date
+ --9.Select books borrowed more than 3 times
+select * from borrowing
+select * from Book
+insert into borrowing 
+values(5,5,'2020-02-01','2020-02-01','2020-02-01')
+
+
+select  g.ID_b , k.Title, COUNT(g.ID_b) as repeted_borroing_book
+from Book k
+inner join borrowing g on k.ID_b = g.ID_b
+Group by g.ID_b , k.Title
+Having  COUNT(g.ID_b) >=3
+--10.Find members who have borrowed books between two dates
+select * from borrowing
+select s.name , g.return_date , g.bowrroing_date , g.du_date
+ from members s
+ inner join borrowing g on s.ID = g.ID
+ where bowrroing_date between '2025-01-01' AND '2060-01-01';
+ --11.Count the total number of books in the library
+ select  COUNT(Availability_Status) as Available_book
+ from Book
+ where Availability_Status = 'Available'
+ Group by Availability_Status 
